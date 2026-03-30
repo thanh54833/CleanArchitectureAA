@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lo-Fi Wireframe - /[Page Name] Page</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 40px 100px;
+      min-height: 100vh;
+    }
+
+    /* ── Page header (wireframe label) ── */
+    .page-header { text-align: center; margin-bottom: 32px; }
+    .page-header h1 { font-size: 20px; font-weight: 600; color: #333; margin-bottom: 4px; }
+    .page-header p  { font-size: 12px; color: #888; }
+
+    /* ── Outer shell ── */
+    .wireframe-container {
+      width: 1054px; /* KICH THUOC DUY NHAT cho moi wireframe */
+      margin-right: 100px; /* margin ben phai de tranh bi sat mep */
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 4px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 815px; /* chieu cao toi thieu chuan */
+    }
+
+    /* ════════════════════════════════════
+       SIDEBAR  (Sidebar.tsx)
+    ════════════════════════════════════ */
+    .sidebar {
+      background: #e8e8e8;
+      border-right: 2px solid #333;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Logo row */
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 14px 12px;
+      border-bottom: 1px solid #ccc;
+    }
+    .sidebar-logo-img {
+      width: 24px; height: 24px;
+      background: #bbb;
+      border: 1px dashed #999;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .sidebar-logo-name { font-size: 13px; font-weight: 600; color: #222; }
+    .sidebar-logo-badge {
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+      background: #e8e8e8; color: #666;
+      border: 1px solid #bbb;
+      padding: 1px 5px; border-radius: 3px;
+    }
+
+    /* Nav */
+    .sidebar-nav { flex: 1; padding: 8px; overflow-y: auto; }
+    .sidebar-section-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: #888;
+      padding: 8px 8px 4px;
+    }
+    .sidebar-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 10px;
+      border-radius: 5px;
+      margin-bottom: 1px;
+      cursor: pointer;
+    }
+    .sidebar-item:hover { background: #ddd; }
+    .sidebar-item.active { background: #fff; border: 1px solid #bbb; }
+    .sidebar-item-icon {
+      width: 16px; height: 16px;
+      background: #bbb; border: 1px solid #aaa;
+      border-radius: 2px; flex-shrink: 0;
+    }
+    .sidebar-item-label { font-size: 13px; color: #444; flex: 1; }
+    .sidebar-item.active .sidebar-item-label { color: #111; font-weight: 500; }
+    .sidebar-item-badge {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      background: #e8e8e8; color: #666;
+      border: 1px solid #bbb;
+      padding: 1px 5px; border-radius: 3px;
+    }
+    .sidebar-divider { height: 1px; background: #ccc; margin: 6px 8px; }
+
+    /* User footer */
+    .sidebar-user {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px;
+      border-top: 1px solid #ccc;
+    }
+    .sidebar-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #ccc;
+      border: 1px solid #aaa;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #555; flex-shrink: 0;
+    }
+    .sidebar-user-info { flex: 1; min-width: 0; }
+    .sidebar-user-name  { font-size: 13px; color: #222; }
+    .sidebar-user-email { font-size: 11px; color: #888; }
+    .sidebar-user-dots  { width: 16px; height: 16px; background: #ccc; border-radius: 2px; flex-shrink: 0; }
+
+    /* ════════════════════════════════════
+       MAIN AREA
+    ════════════════════════════════════ */
+    .main-area { display: flex; flex-direction: column; }
+
+    /* Header / SearchTrigger */
+    .header {
+      height: 52px;
+      border-bottom: 2px solid #333;
+      display: flex; align-items: center;
+      padding: 0 20px; gap: 12px;
+    }
+    .search-trigger {
+      flex: 1; max-width: 360px; height: 32px;
+      background: #f0f0f0; border: 1px solid #ccc; border-radius: 5px;
+      display: flex; align-items: center; padding: 0 10px; gap: 8px;
+    }
+    .search-trigger-icon { width: 14px; height: 14px; background: #bbb; border-radius: 2px; flex-shrink: 0; }
+    .search-trigger-text { font-size: 13px; color: #888; flex: 1; }
+    .search-trigger-kbd {
+      font-size: 10px; color: #888;
+      background: #e0e0e0; border: 1px solid #ccc;
+      border-radius: 3px; padding: 1px 5px;
+    }
+
+    /* PageLayout content */
+    .content { flex: 1; padding: 28px 24px; background: #fafafa; }
+
+    /* Title block */
+    .page-title { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 6px; }
+    .page-desc  { font-size: 14px; color: #666; margin-bottom: 16px; }
+
+    /* Breadcrumb */
+    .breadcrumb { display: flex; align-items: center; gap: 6px; margin-bottom: 16px; }
+    .breadcrumb-item {
+      font-size: 11px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: .6px;
+      color: #888; font-family: monospace;
+    }
+    .breadcrumb-item.current { color: #222; font-weight: 600; }
+    .breadcrumb-sep { font-size: 11px; color: #bbb; }
+
+    /* Tab bar */
+    .tabs-bar {
+      display: inline-flex; align-items: center; gap: 2px;
+      background: #ebebeb; border: 1px solid #ddd;
+      border-radius: 8px; padding: 4px; margin-bottom: 24px;
+    }
+    .tab {
+      padding: 5px 12px; border-radius: 5px;
+      font-size: 13px; font-weight: 500; color: #666;
+      border: none; background: transparent; cursor: pointer;
+    }
+    .tab.active { background: #fff; border: 1px solid #ccc; color: #111; }
+
+    /* ════════════════════════════════════
+       PAGE TITLE ROW (title + CTA button)
+    ════════════════════════════════════ */
+    .title-row {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 12px;
+      margin-bottom: 6px;
+    }
+    .title-row .page-title { margin-bottom: 0; }
+    .title-row .modal-btn {
+      flex-shrink: 0;
+      font-size: 12px; font-weight: 600; padding: 6px 14px;
+    }
+
+    /* ════════════════════════════════════
+       GENERIC CARD GRID
+       Dùng cho mọi page dạng card (SkillCard, AgentCard, CommandCard…)
+    ════════════════════════════════════ */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .card-item {
+      background: #fff; border: 1px solid #ddd;
+      border-radius: 8px; padding: 14px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .card-item-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 8px;
+    }
+    .card-item-left { flex: 1; min-width: 0; }
+    /* CategoryBadge / TypeBadge — luôn grayscale */
+    .card-type-badge {
+      display: inline-block;
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+      background: #e8e8e8; color: #666;
+      border: 1px solid #bbb;
+      padding: 1px 5px; border-radius: 3px; margin-bottom: 4px;
+    }
+    .card-item-name {
+      font-size: 14px; font-weight: 600; color: #111;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-item-meta { text-align: right; flex-shrink: 0; }
+    .card-item-meta-primary { font-size: 12px; color: #555; font-family: monospace; display: block; }
+    .card-item-meta-label   { font-size: 10px; color: #999; }
+    .card-item-desc {
+      font-size: 12px; color: #666; line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .card-item-footer {
+      display: flex; align-items: center;
+      border-top: 1px solid #eee; padding-top: 8px; gap: 8px;
+    }
+    .card-item-category { font-size: 11px; color: #888; }
+    /* CTA text button (dùng cho SkillCard "Add to stack") */
+    .card-item-cta {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 4px;
+      font-size: 11px; color: #555;
+      background: #f0f0f0; border: 1px solid #ddd;
+      border-radius: 4px; padding: 3px 8px;
+    }
+    .card-item-cta-icon { width: 10px; height: 10px; background: #bbb; border-radius: 1px; }
+    /* Footer icon buttons (dùng cho PromptCard: Copy + Playground) */
+    .card-footer-actions {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .card-icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      background: #f0f0f0; border: 1px solid #ddd;
+      border-radius: 6px; cursor: pointer; flex-shrink: 0;
+    }
+    .card-icon-btn svg { width: 14px; height: 14px; stroke: #555; }
+
+    /* ════════════════════════════════════
+       PROMPT CARD (PromptCard variant)
+       Dùng cho /prompts page — 3-col grid
+    ════════════════════════════════════ */
+    .prompts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .prompt-card {
+      background: #fff; border: 1px solid #ddd;
+      border-radius: 8px; padding: 14px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .prompt-card-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 8px;
+    }
+    .prompt-card-left { flex: 1; min-width: 0; }
+    /* CategoryBadge (SYSTEM / USER / ASSISTANT) — grayscale */
+    .prompt-type-badge {
+      display: inline-block;
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+      background: #e8e8e8; color: #666;
+      border: 1px solid #bbb;
+      padding: 1px 5px; border-radius: 3px; margin-bottom: 4px;
+    }
+    .prompt-name {
+      font-size: 14px; font-weight: 600; color: #111;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .prompt-uses { text-align: right; flex-shrink: 0; }
+    .prompt-uses-count { font-size: 12px; color: #555; font-family: monospace; display: block; }
+    .prompt-uses-label { font-size: 10px; color: #999; }
+    .prompt-desc {
+      font-size: 12px; color: #666; line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .prompt-card-footer {
+      display: flex; align-items: center;
+      border-top: 1px solid #eee; padding-top: 8px; gap: 8px;
+    }
+    .prompt-category { font-size: 11px; color: #888; }
+    /* "Copy prompt" button — icon + text inline */
+    .prompt-copy-btn {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 4px;
+      font-size: 11px; color: #555;
+      background: #f0f0f0; border: 1px solid #ddd;
+      border-radius: 4px; padding: 3px 8px;
+    }
+    .prompt-copy-btn-icon { width: 10px; height: 10px; background: #bbb; border-radius: 1px; }
+    /* Footer icon buttons cho PromptCard (Copy + Playground) — alias của card-icon-btn */
+    .prompt-footer-actions {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .prompt-icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      background: #f0f0f0; border: 1px solid #ddd;
+      border-radius: 6px; cursor: pointer; flex-shrink: 0;
+    }
+    .prompt-icon-btn:hover { background: #e8e8e8; border-color: #ccc; }
+    .prompt-icon-btn svg { width: 14px; height: 14px; stroke: #555; }
+
+    /* ════════════════════════════════════
+       LEADERBOARD CARD (LeaderboardCard variant)
+       Dùng cho /leaderboard page — 3-col grid
+    ════════════════════════════════════ */
+    .leaderboard-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .leaderboard-card {
+      background: #fff; border: 1px solid #ddd;
+      border-radius: 8px; padding: 14px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .leaderboard-card-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 8px;
+    }
+    .leaderboard-card-left { flex: 1; min-width: 0; }
+    .leaderboard-card-center { display: flex; align-items: center; gap: 8px; }
+    .leaderboard-card-right { text-align: right; flex-shrink: 0; }
+    /* RankBadge — gold/silver/bronze/default */
+    .rank-badge {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    .rank-badge.rank-1 { background: #fffacd; border: 1px solid #ffd700; color: #b8860b; }
+    .rank-badge.rank-2 { background: #f0f0f0; border: 1px solid #c0c0c0; color: #666; }
+    .rank-badge.rank-3 { background: #fff5e6; border: 1px solid #cd7f32; color: #8b4513; }
+    .rank-badge.rank-default { background: #e8e8e8; border: 1px solid #ccc; color: #666; }
+    /* CategoryBadge trong LeaderboardCard — grayscale */
+    .category-badge {
+      display: inline-block;
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+      background: #e8e8e8; color: #666;
+      border: 1px solid #bbb;
+      padding: 1px 5px; border-radius: 3px; margin-bottom: 4px;
+    }
+    .leaderboard-name {
+      font-size: 14px; font-weight: 600; color: #111;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .leaderboard-installs-count { font-size: 12px; color: #555; font-family: monospace; display: block; }
+    .leaderboard-installs-label { font-size: 10px; color: #999; }
+    .leaderboard-desc {
+      font-size: 12px; color: #666; line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .leaderboard-card-footer {
+      display: flex; align-items: center;
+      border-top: 1px solid #eee; padding-top: 8px; gap: 8px;
+    }
+    .leaderboard-category { font-size: 11px; color: #888; }
+    .leaderboard-footer-actions { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+    .leaderboard-add-btn {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 11px; color: #555; cursor: pointer;
+    }
+    .leaderboard-add-icon { width: 14px; height: 14px; }
+
+    /* ════════════════════════════════════
+       TABLE (dùng khi trang cần dạng bảng)
+    ════════════════════════════════════ */
+    .table-wrapper { width: 100%; border: 1px solid #ccc; border-radius: 4px; background: #fff; overflow: hidden; }
+    .table-row { display: flex; padding: 10px 12px; border-bottom: 1px solid #eee; gap: 8px; align-items: center; }
+    .table-row:last-child { border-bottom: none; }
+    .table-header-row { background: #e8e8e8; }
+    .table-header-row .table-cell { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: .5px; }
+    .table-cell { flex: 1; font-size: 12px; color: #555; }
+    .table-cell-sm { flex: 0 0 80px; font-size: 12px; color: #555; }
+    .table-cell-xs { flex: 0 0 48px; font-size: 12px; color: #555; }
+    /* Badge dùng trong bảng — grayscale */
+    .table-badge {
+      display: inline-block; font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .4px;
+      background: #e8e8e8; color: #666; border: 1px solid #bbb;
+      padding: 1px 5px; border-radius: 3px;
+    }
+    /* Action icon trong bảng */
+    .table-action-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px;
+      background: #f0f0f0; border: 1px solid #ddd; border-radius: 4px;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .table-action-btn svg { width: 12px; height: 12px; stroke: #666; }
+
+    /* ════════════════════════════════════
+       SEARCH INPUT ROW
+       Dùng cho search pages (SearchEngine, text/semantic tabs)
+    ════════════════════════════════════ */
+    .search-input-row { display: flex; gap: 10px; margin-bottom: 16px; }
+    .search-input-field {
+      flex: 1; height: 40px;
+      background: #f0f0f0; border: 1px solid #ccc;
+      border-radius: 6px;
+      display: flex; align-items: center; padding: 0 10px; gap: 8px;
+    }
+    .search-input-icon { width: 16px; height: 16px; background: #bbb; border-radius: 2px; flex-shrink: 0; }
+    .search-input-placeholder { font-size: 13px; color: #aaa; }
+    .search-btn {
+      height: 40px; padding: 0 18px;
+      background: #333; color: #fff;
+      border: none; border-radius: 6px;
+      font-size: 13px; font-weight: 500;
+      flex-shrink: 0; cursor: pointer;
+    }
+
+    /* ════════════════════════════════════
+       EMPTY STATE
+       Dùng khi chưa có data / kết quả trống
+    ════════════════════════════════════ */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 48px 24px;
+      border: 1px solid #ddd; border-radius: 8px;
+      background: #f8f8f8;
+      text-align: center; gap: 6px;
+    }
+    .empty-state-icon {
+      width: 48px; height: 48px; background: #ddd;
+      border: 1px dashed #bbb; border-radius: 50%;
+      margin-bottom: 6px;
+    }
+    .empty-state-primary { font-size: 13px; color: #666; }
+    .empty-state-secondary { font-size: 11px; color: #aaa; }
+
+    /* ════════════════════════════════════
+       SECTION HEADER ROW
+       Dùng cho cache header, list header có action button
+    ════════════════════════════════════ */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .section-header-title { font-size: 13px; font-weight: 500; color: #333; }
+    .section-header-btn {
+      height: 28px; padding: 0 10px;
+      background: #f0f0f0; color: #666;
+      border: 1px solid #ccc; border-radius: 5px;
+      font-size: 11px; cursor: pointer;
+    }
+
+    /* ════════════════════════════════════
+       CHECKBOX
+       Dùng trong form, filter, settings
+    ════════════════════════════════════ */
+    .checkbox-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 4px 0;
+    }
+    .checkbox-box {
+      width: 16px; height: 16px;
+      background: #fff; border: 1px solid #bbb;
+      border-radius: 3px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .checkbox-box.checked {
+      background: #333; border-color: #333;
+    }
+    .checkbox-box.checked::after {
+      content: '✓'; font-size: 10px; color: #fff; font-weight: 700;
+    }
+    .checkbox-label { font-size: 13px; color: #444; }
+    .checkbox-hint  { font-size: 11px; color: #aaa; }
+
+    /* ════════════════════════════════════
+       TOGGLE SWITCH
+       Dùng trong settings / config panel
+    ════════════════════════════════════ */
+    .toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 0;
+    }
+    .toggle-info { display: flex; flex-direction: column; gap: 2px; }
+    .toggle-label { font-size: 13px; color: #333; font-weight: 500; }
+    .toggle-desc  { font-size: 11px; color: #888; }
+    .toggle-switch {
+      width: 36px; height: 20px; border-radius: 10px;
+      background: #ddd; border: 1px solid #ccc;
+      position: relative; flex-shrink: 0; cursor: pointer;
+    }
+    .toggle-switch::after {
+      content: ''; position: absolute;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: #fff; border: 1px solid #ccc;
+      top: 2px; left: 2px;
+    }
+    .toggle-switch.on { background: #333; border-color: #333; }
+    .toggle-switch.on::after { left: 18px; border-color: #555; }
+
+    /* ════════════════════════════════════
+       FORM (dùng khi trang cần dạng form inline)
+    ════════════════════════════════════ */
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 11px; font-weight: 600; color: #555; margin-bottom: 4px; display: block; }
+    .form-input {
+      width: 100%; height: 36px;
+      background: #f0f0f0; border: 1px solid #ccc;
+      border-radius: 4px; padding: 0 10px;
+      font-size: 13px; color: #888;
+    }
+    .form-textarea {
+      width: 100%; height: 80px;
+      background: #f0f0f0; border: 1px solid #ccc;
+      border-radius: 4px; padding: 8px 10px;
+      font-size: 13px; color: #888; resize: none;
+    }
+    .form-hint { font-size: 10px; color: #aaa; margin-top: 3px; }
+    .form-btn {
+      height: 36px; padding: 0 16px;
+      background: #333; color: #fff;
+      border: none; border-radius: 4px;
+      font-size: 13px; cursor: pointer;
+    }
+    .form-btn-secondary {
+      height: 36px; padding: 0 16px;
+      background: #e8e8e8; color: #555;
+      border: 1px solid #ccc; border-radius: 4px;
+      font-size: 13px; cursor: pointer;
+    }
+    /* Select dropdown (dùng ngoài Modal) */
+    .form-select {
+      width: 100%; height: 36px;
+      background: #f0f0f0; border: 1px solid #ccc;
+      border-radius: 4px; padding: 0 10px;
+      font-size: 13px; color: #555;
+      appearance: none; cursor: pointer;
+    }
+
+    /* ════════════════════════════════════
+       MODAL SELECT (dropdown bên trong Modal)
+       Dùng khi modal-field cần chọn từ danh sách
+    ════════════════════════════════════ */
+    .modal-select {
+      background: #fff; border: 1px solid #ccc;
+      border-radius: 5px; padding: 8px 12px;
+      font-size: 13px; color: #333;
+      width: 100%; appearance: none; cursor: pointer;
+    }
+    .modal-select option { color: #333; }
+
+    /* ════════════════════════════════════
+       PLAYGROUND CONFIG PANEL
+       Dùng cho panel cấu hình Playground (bên phải chat)
+    ════════════════════════════════════ */
+    .playground-config {
+      background: #fff; border: 1px solid #ddd;
+      border-radius: 8px; padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .playground-config-header {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+      color: #888;
+    }
+    .config-section { display: flex; flex-direction: column; gap: 6px; }
+    .config-label {
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+      color: #aaa; padding-bottom: 4px; border-bottom: 1px solid #eee;
+    }
+    .config-item {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: #555; padding: 4px 0;
+    }
+    /* Variant: config-item với textarea (system prompt…) */
+    .config-itemtextarea { flex-direction: column; align-items: flex-start; gap: 4px; }
+    /* Variant: config-item collapsible (Advanced Settings toggle) */
+    .config-item.collapsible { cursor: pointer; }
+    .config-collapsed-hint { font-size: 9px; color: #aaa; }
+    .config-expanded-hint  { font-size: 9px; color: #666; }
+    /* Ẩn hint ngược lại theo state */
+    .config-item.collapsible.expanded .config-collapsed-hint { display: none; }
+    .config-item.collapsible:not(.expanded) .config-expanded-hint { display: none; }
+
+    .config-input {
+      background: #fff; border: 1px solid #ddd;
+      border-radius: 4px; padding: 4px 8px;
+      font-size: 11px; color: #666;
+      width: 140px; text-align: right;
+    }
+    .config-value { font-weight: 600; color: #333; }
+    .config-card {
+      background: #f5f5f5; border: 1px solid #ddd;
+      border-radius: 4px; padding: 4px 8px; font-size: 11px; color: #666;
+    }
+    textarea.config-card {
+      width: 100%; min-height: 60px;
+      resize: none; font-family: inherit;
+    }
+
+    /* Dropdown (config panel) */
+    .config-dropdown-wrapper { display: flex; align-items: center; gap: 6px; }
+    .config-dropdown {
+      flex: 1; background: #fff; border: 1px solid #ddd;
+      border-radius: 4px; padding: 4px 8px;
+      font-size: 11px; color: #666;
+      appearance: none; cursor: pointer;
+    }
+    .config-dropdown-add-btn {
+      width: 24px; height: 24px;
+      background: #f0f0f0; border: 1px solid #ddd;
+      border-radius: 4px; display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: #666; cursor: pointer; flex-shrink: 0;
+    }
+    .config-dropdown-add-btn:hover { background: #e8e8e8; border-color: #ccc; }
+
+    /* Advanced settings block (hiện/ẩn theo .expanded) */
+    .config-advanced { display: none; }
+    .config-advanced.expanded { display: flex; flex-direction: column; gap: 4px; }
+
+    /* Slider row bên trong Advanced settings */
+    .config-slider {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: #555; padding: 3px 0;
+    }
+    .config-slider-input {
+      width: 60px;
+      background: #f5f5f5; border: 1px solid #ddd;
+      border-radius: 4px; padding: 2px 6px;
+      font-size: 11px; color: #666; text-align: right;
+    }
+
+    /* ════════════════════════════════════
+       COMPONENT BOUNDARY SYSTEM
+       Label chip góc trên PHẢI + border màu riêng
+    ════════════════════════════════════ */
+    .comp { position: relative; border-radius: 4px; }
+    .comp::after {
+      content: attr(data-comp);
+      position: absolute; top: -1px; right: -1px;
+      font-size: 9px; font-weight: 700; letter-spacing: .4px;
+      text-transform: uppercase; padding: 2px 7px;
+      border-radius: 0 4px 0 4px;
+      z-index: 20; white-space: nowrap; line-height: 1.6; pointer-events: none;
+    }
+
+    /* solid = component lớn, dashed = component nhỏ lồng bên trong */
+    .comp-sidebar      { outline: 2px solid  #7c3aed; }
+    .comp-sidebar::after      { background: #7c3aed; color: #fff; }
+
+    .comp-search-modal { outline: 2px solid  #2563eb; }
+    .comp-search-modal::after { background: #2563eb; color: #fff; }
+
+    .comp-page-layout  { outline: 2px solid  #ea580c; }
+    .comp-page-layout::after  { background: #ea580c; color: #fff; }
+
+    .comp-breadcrumb   { outline: 2px dashed #db2777; outline-offset: 2px; }
+    .comp-breadcrumb::after   { background: #db2777; color: #fff; }
+
+    .comp-tabs         { outline: 2px dashed #ca8a04; outline-offset: 2px; }
+    .comp-tabs::after         { background: #ca8a04; color: #fff; }
+
+    .comp-card         { outline: 2px solid  #16a34a; }
+    .comp-card::after         { background: #16a34a; color: #fff; }
+
+    /* ── Legend ── */
+    .legend {
+      max-width: 1200px; margin: 28px auto 0;
+      background: #fff; border: 2px dashed #999;
+      border-radius: 4px; padding: 16px;
+    }
+    .legend-title {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: #666; margin-bottom: 12px;
+    }
+    .legend-items { display: flex; flex-wrap: wrap; gap: 20px; }
+    .legend-item  { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #666; }
+    .legend-dot   { width: 14px; height: 14px; border: 2px solid #333; background: #e0e0e0; border-radius: 2px; }
+
+    /* ── Modal / Dialog Overlay ── */
+    .modal-overlay {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+    }
+    .modal-dialog {
+      background: #fff; border: 2px solid #333;
+      border-radius: 8px; width: 420px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #ddd;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-title { font-size: 16px; font-weight: 700; color: #111; }
+    .modal-close-icon {
+      width: 20px; height: 20px;
+      background: #e8e8e8; border: 1px solid #ccc;
+      border-radius: 4px; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: #666;
+    }
+    .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .modal-field { display: flex; flex-direction: column; gap: 6px; }
+    .modal-label { font-size: 12px; font-weight: 600; color: #444; }
+    .modal-input {
+      background: #fff; border: 1px solid #ccc;
+      border-radius: 5px; padding: 8px 12px;
+      font-size: 13px; color: #333;
+      width: 100%;
+    }
+    .modal-input::placeholder { color: #aaa; }
+    .modal-textarea {
+      background: #fff; border: 1px solid #ccc;
+      border-radius: 5px; padding: 8px 12px;
+      font-size: 13px; color: #333;
+      width: 100%; min-height: 120px; resize: none;
+    }
+    .modal-hint { font-size: 10px; color: #888; }
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid #eee;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .modal-btn {
+      padding: 7px 16px; border-radius: 6px;
+      font-size: 13px; font-weight: 600;
+      border: 1px solid; cursor: pointer;
+    }
+    .modal-btn-cancel { background: #f5f5f5; border-color: #ddd; color: #555; }
+    .modal-btn-connect { background: #f0f0f0; border-color: #bbb; color: #333; }
+    .modal-btn-save { background: #333; border-color: #333; color: #fff; margin-left: auto; }
+
+    /* ── Modal Boundary ── */
+    .comp-modal        { outline: 2px solid  #9333ea; }
+    .comp-modal::after { background: #9333ea; color: #fff; }
+    .comp-modal-dialog { outline: 2px dashed #9333ea; outline-offset: 4px; }
+    .comp-modal-dialog::after { background: #9333ea; color: #fff; }
+
+    /* ── Playground Layout (2-col: Chat + Config) ── */
+    .playground-layout {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 16px;
+      height: 100%;
+      min-height: 400px;
+    }
+    .playground-chat {
+      background: #fff; border: 1px solid #ddd;
+      border-radius: 8px; padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .playground-chat-header {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+      color: #888;
+    }
+    .playground-chat-messages {
+      flex: 1; display: flex; flex-direction: column; gap: 16px;
+      padding: 16px; overflow-y: auto;
+    }
+    .chat-message { display: flex; }
+    .chat-message.user-message { justify-content: flex-end; }
+    .chat-message.ai-message { justify-content: flex-start; width: 100%; }
+    .chat-bubble {
+      padding: 10px 14px; border-radius: 12px;
+      font-size: 13px; line-height: 1.5;
+    }
+    .chat-bubble.user-bubble {
+      background: #333; color: #fff;
+      border-bottom-right-radius: 4px;
+      max-width: 85%;
+    }
+    .chat-bubble.ai-bubble {
+      background: #f0f0f0; color: #333;
+      border-bottom-left-radius: 4px;
+      width: 100%;
+    }
+    .playground-input-area { position: relative; }
+    .playground-input {
+      width: 100%; min-height: 80px;
+      background: #f5f5f5; border: 1px solid #ddd;
+      border-radius: 6px; padding: 10px; font-size: 13px; color: #555;
+      resize: none; padding-right: 76px;
+    }
+    .playground-input-actions {
+      position: absolute; right: 8px; bottom: 8px;
+      display: flex; gap: 6px;
+    }
+    .playground-attach-btn {
+      width: 32px; height: 32px;
+      background: #e8e8e8; border: 1px solid #ddd; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .playground-send-btn {
+      width: 32px; height: 32px;
+      background: #555; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-icon { font-size: 16px; color: #666; font-weight: 700; }
+    .playground-send-btn .btn-icon { color: #fff; }
+    .playground-hint { font-size: 10px; color: #aaa; text-align: center; }
+
+    /* ── Component Boundary: ChatView / PlaygroundLayout ── */
+    .comp-chat-view { outline: 2px solid #0891b2; }
+    .comp-chat-view::after { background: #0891b2; color: #fff; }
+    .comp-playground-layout { outline: 2px solid #0891b2; }
+    .comp-playground-layout::after { background: #0891b2; color: #fff; }
+
+    /* ── ChatSidebar Boundary ── */
+    .comp-chat-sidebar { outline: 2px dashed #0e7490; outline-offset: 2px; }
+    .comp-chat-sidebar::after { background: #0e7490; color: #fff; }
+
+    /* ── PageNavigator ── */
+    .comp-page-navigator { outline: 2px dashed #9333ea; }
+    .comp-page-navigator::after { background: #9333ea; color: #fff; font-size: 9px; }
+    .page-navigator {
+      display: flex; align-items: center;
+      justify-content: center; gap: 12px; padding: 0;
+    }
+    .page-nav-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px;
+      background: #fff; border: 1px solid #ddd;
+      border-radius: 10px; font-size: 13px; font-weight: 600; color: #555;
+      cursor: pointer;
+    }
+    .page-nav-btn:hover { background: #f5f5f5; border-color: #ccc; color: #333; }
+    .page-nav-btn:disabled { opacity: 0.3; cursor: default; }
+    .page-nav-btn svg { width: 14px; height: 14px; }
+    .page-indicator {
+      display: flex; align-items: center; gap: 4px;
+      padding: 6px 14px;
+      background: #f0f0f0; border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 13px; font-weight: 600; color: #333;
+    }
+    .page-indicator-sep { color: #888; font-weight: 500; }
+
+    /* ── Grid wrapper boundaries (dùng khi grid cần boundary riêng) ── */
+    /* LeaderboardGrid (comp-leaderboard-grid) dùng màu tím Sidebar */
+    .comp-prompt-grid      { outline: 2px solid #7c3aed; }
+    .comp-prompt-grid::after      { background: #7c3aed; color: #fff; }
+    .comp-leaderboard-grid { outline: 2px solid #7c3aed; }
+    .comp-leaderboard-grid::after { background: #7c3aed; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Wireframe title ── -->
+  <div class="page-header">
+    <h1>Lo-Fi Wireframe — /[page-name] Page</h1>
+    <p>1:1 mapping với [ComponentView].tsx · Sidebar.tsx · PageLayout.tsx · SearchTrigger.tsx</p>
+  </div>
+
+  <div class="wireframe-container">
+
+    <!-- ══════════════════════════════════
+         [1] Sidebar.tsx
+    ══════════════════════════════════ -->
+    <aside class="sidebar comp comp-sidebar" data-comp="Sidebar">
+
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-img"></div>
+        <span class="sidebar-logo-name">AI Templates</span>
+        <span class="sidebar-logo-badge">Beta</span>
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <div class="sidebar-section-label">Workplace</div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Leaderboard</span>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- Browse: 9 items — gắn class "active" vào item tương ứng trang hiện tại -->
+        <div class="sidebar-section-label">Browse</div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Search Engine</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Skills</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Prompts</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Agents</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Chatbot</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Commands</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Settings</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Hooks</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">MCPs</span>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- Resources: 5 items -->
+        <div class="sidebar-section-label">Resources</div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Trending</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Jobs</span>
+          <span class="sidebar-item-badge">New</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Blog ↗</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Docs ↗</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">GitHub ↗</span>
+        </div>
+
+      </nav>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">AK</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">Alex Kim</div>
+          <div class="sidebar-user-email">alex@example.com</div>
+        </div>
+        <div class="sidebar-user-dots"></div>
+      </div>
+
+    </aside>
+
+    <!-- ══════════════════════════════════
+         MAIN AREA
+    ══════════════════════════════════ -->
+    <div class="main-area">
+
+      <!-- [2] SearchTrigger -->
+      <header class="header comp comp-search-modal" data-comp="SearchTrigger">
+        <div class="search-trigger">
+          <div class="search-trigger-icon"></div>
+          <span class="search-trigger-text">Search...</span>
+          <span class="search-trigger-kbd">⌘K</span>
+        </div>
+      </header>
+
+      <!-- [3] PageLayout + [PageView] -->
+      <main class="content comp comp-page-layout" data-comp="PageLayout">
+
+        <!-- Option A: title đơn giản -->
+        <h1 class="page-title">[Page Title]</h1>
+        <p class="page-desc">[Page description]</p>
+
+        <!-- Option B: title + CTA button (dùng khi trang có nút "+ Add …") -->
+        <!--
+        <div class="title-row">
+          <h1 class="page-title">[Page Title]</h1>
+          <button class="modal-btn modal-btn-save">+ Add [Item]</button>
+        </div>
+        <p class="page-desc">[Page description]</p>
+        -->
+
+        <nav class="breadcrumb comp comp-breadcrumb" data-comp="Breadcrumb">
+          <span class="breadcrumb-item">All Tools</span>
+          <span class="breadcrumb-sep">›</span>
+          <span class="breadcrumb-item current">[Page Name]</span>
+        </nav>
+
+        <div class="tabs-bar comp comp-tabs" data-comp="Tabs">
+          <div class="tab active">[Tab 1]</div>
+          <div class="tab">[Tab 2]</div>
+          <div class="tab">[Tab 3]</div>
+        </div>
+
+        <!-- ── OPTION A: Generic Card Grid (SkillCard, AgentCard, CommandCard…) ── -->
+        <div class="card-grid">
+
+          <div class="card-item comp comp-card" data-comp="[CardName]">
+            <div class="card-item-top">
+              <div class="card-item-left">
+                <span class="card-type-badge">[TYPE]</span>
+                <div class="card-item-name">[Item Name]</div>
+              </div>
+              <div class="card-item-meta">
+                <span class="card-item-meta-primary">[stat]</span>
+                <span class="card-item-meta-label">[label]</span>
+              </div>
+            </div>
+            <p class="card-item-desc">[Item description goes here, max 2 lines]</p>
+            <div class="card-item-footer">
+              <span class="card-item-category">[Category]</span>
+              <!-- CTA text (dùng cho SkillCard "Add to stack") -->
+              <div class="card-item-cta">
+                <div class="card-item-cta-icon"></div>
+                [CTA text]
+              </div>
+              <!-- HOẶC: Icon buttons (dùng cho PromptCard Copy + Playground) -->
+              <!--
+              <div class="card-footer-actions">
+                <button class="card-icon-btn" title="Copy">
+                  <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+                <button class="card-icon-btn" title="Playground">
+                  <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </button>
+              </div>
+              -->
+            </div>
+          </div>
+
+          <!-- Thêm card-item theo số lượng data thực tế -->
+
+        </div>
+
+        <!-- ── OPTION B: Prompt Card Grid (PromptCard — /prompts) ── -->
+        <!--
+        <div class="prompts-grid">
+          <div class="prompt-card comp comp-card" data-comp="PromptCard">
+            <div class="prompt-card-top">
+              <div class="prompt-card-left">
+                <span class="prompt-type-badge">System</span>
+                <div class="prompt-name">[Prompt Name]</div>
+              </div>
+              <div class="prompt-uses">
+                <span class="prompt-uses-count">8.4k</span>
+                <span class="prompt-uses-label">uses</span>
+              </div>
+            </div>
+            <p class="prompt-desc">[Prompt description, max 2 lines]</p>
+            <div class="prompt-card-footer">
+              <span class="prompt-category">[Category]</span>
+              <div class="prompt-footer-actions">
+                <button class="prompt-icon-btn" title="Copy prompt">
+                  <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+                <button class="prompt-icon-btn" title="Open playground">
+                  <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        -->
+
+        <!-- ── OPTION C: Leaderboard Card Grid (LeaderboardCard — /leaderboard) ── -->
+        <!--
+        <div class="leaderboard-grid">
+          <div class="leaderboard-card comp comp-card" data-comp="LeaderboardCard">
+            <div class="leaderboard-card-top">
+              <div class="leaderboard-card-center">
+                <div class="rank-badge rank-1">1</div>
+                <div class="leaderboard-card-left">
+                  <span class="category-badge">Skill</span>
+                  <div class="leaderboard-name">[Item Name]</div>
+                </div>
+              </div>
+              <div class="leaderboard-card-right">
+                <span class="leaderboard-installs-count">15.7k</span>
+                <span class="leaderboard-installs-label">installs</span>
+              </div>
+            </div>
+            <p class="leaderboard-desc">[Description, max 2 lines]</p>
+            <div class="leaderboard-card-footer">
+              <span class="leaderboard-category">[Category]</span>
+              <div class="leaderboard-footer-actions">
+                <div class="leaderboard-add-btn">
+                  <svg class="leaderboard-add-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                  Add to stack
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        -->
+
+        <!-- ── OPTION D: Table ── -->
+        <!--
+        <div class="table-wrapper">
+          <div class="table-row table-header-row">
+            <div class="table-cell">[Col 1]</div>
+            <div class="table-cell">[Col 2]</div>
+            <div class="table-cell-sm">[Col 3]</div>
+            <div class="table-cell-xs"></div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell">[Value]</div>
+            <div class="table-cell"><span class="table-badge">[badge]</span></div>
+            <div class="table-cell-sm">[Value]</div>
+            <div class="table-cell-xs">
+              <button class="table-action-btn"><svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+            </div>
+          </div>
+        </div>
+        -->
+
+        <!-- ── OPTION E: Search Input Row ── -->
+        <!--
+        <div class="search-input-row">
+          <div class="search-input-field">
+            <div class="search-input-icon"></div>
+            <span class="search-input-placeholder">Enter search query...</span>
+          </div>
+          <button class="search-btn">Search</button>
+        </div>
+        -->
+
+        <!-- ── OPTION F: Empty State ── -->
+        <!--
+        <div class="empty-state">
+          <div class="empty-state-icon"></div>
+          <span class="empty-state-primary">Enter a search query to find results</span>
+          <span class="empty-state-secondary">Text search across all indexed content</span>
+        </div>
+        -->
+
+        <!-- ── OPTION G: Section Header Row (title + action btn) ── -->
+        <!--
+        <div class="section-header">
+          <span class="section-header-title">Semantic Search Cache</span>
+          <button class="section-header-btn">Clear Cache</button>
+        </div>
+        -->
+
+        <!-- ── OPTION H: Checkbox list ── -->
+        <!--
+        <div class="checkbox-row">
+          <div class="checkbox-box checked"></div>
+          <span class="checkbox-label">[Label]</span>
+          <span class="checkbox-hint">[Optional hint]</span>
+        </div>
+        <div class="checkbox-row">
+          <div class="checkbox-box"></div>
+          <span class="checkbox-label">[Label unchecked]</span>
+        </div>
+        -->
+
+        <!-- ── OPTION I: Toggle Switch ── -->
+        <!--
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">[Setting Name]</span>
+            <span class="toggle-desc">[Short description]</span>
+          </div>
+          <div class="toggle-switch on"></div>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">[Setting Name]</span>
+            <span class="toggle-desc">[Short description]</span>
+          </div>
+          <div class="toggle-switch"></div>
+        </div>
+        -->
+
+        <!-- ── OPTION J: Modal / Dialog (với Input, Select, Textarea) ── -->
+        <!--
+        <div class="modal-overlay">
+          <div class="modal-dialog comp comp-modal-dialog" data-comp="Modal">
+            <div class="modal-header">
+              <span class="modal-title">[Modal Title]</span>
+              <div class="modal-close-icon">✕</div>
+            </div>
+            <div class="modal-body">
+              <div class="modal-field">
+                <label class="modal-label">[Text Field]</label>
+                <input class="modal-input" type="text" placeholder="[Placeholder]" />
+              </div>
+              <div class="modal-field">
+                <label class="modal-label">[Select Field]</label>
+                <select class="modal-select">
+                  <option>[Option 1]</option>
+                  <option>[Option 2]</option>
+                </select>
+              </div>
+              <div class="modal-field">
+                <label class="modal-label">[Password Field]</label>
+                <input class="modal-input" type="password" placeholder="[Placeholder]" />
+                <span class="modal-hint">[Hint text]</span>
+              </div>
+              <div class="modal-field">
+                <label class="modal-label">[Textarea Field]</label>
+                <textarea class="modal-textarea" placeholder="[Placeholder]"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="modal-btn modal-btn-cancel">Cancel</button>
+              <button class="modal-btn modal-btn-connect">Check Connect</button>
+              <button class="modal-btn modal-btn-save">Save</button>
+            </div>
+          </div>
+        </div>
+        -->
+
+        <!-- ── OPTION K: Playground Layout (Chat + Config Panel) ── -->
+        <!--
+        <div class="playground-layout comp comp-playground-layout" data-comp="PlaygroundLayout">
+
+          <div class="playground-chat">
+            <div class="playground-chat-header">Conversation / Chat</div>
+            <div class="playground-chat-messages">
+              <div class="chat-message user-message">
+                <div class="chat-bubble user-bubble">[User message]</div>
+              </div>
+              <div class="chat-message ai-message">
+                <div class="chat-bubble ai-bubble">[AI response]</div>
+              </div>
+            </div>
+            <div class="playground-input-area">
+              <textarea class="playground-input" placeholder="Type your message..."></textarea>
+              <div class="playground-input-actions">
+                <div class="playground-attach-btn"><span class="btn-icon">+</span></div>
+                <div class="playground-send-btn"><span class="btn-icon">→</span></div>
+              </div>
+            </div>
+            <div class="playground-hint">Press Enter to send · Shift+Enter for new line</div>
+          </div>
+
+          <div class="playground-config">
+            <div class="playground-config-header">Configuration / Parameters</div>
+
+            <div class="config-section">
+              <div class="config-label">CONFIGURATION</div>
+              <div class="config-item config-itemtextarea">
+                <span>System Prompt</span>
+                <textarea class="config-card">[Prompt name]</textarea>
+              </div>
+            </div>
+
+            <div class="config-section">
+              <div class="config-label">PARAMETERS</div>
+              <div class="config-item">
+                <span>Provider</span>
+                <div class="config-dropdown-wrapper">
+                  <select class="config-dropdown">
+                    <option>OpenRouter</option>
+                    <option>OpenAI</option>
+                    <option>Anthropic</option>
+                  </select>
+                  <div class="config-dropdown-add-btn">+</div>
+                </div>
+              </div>
+              <div class="config-item">
+                <span>Model</span>
+                <div class="config-dropdown-wrapper">
+                  <select class="config-dropdown">
+                    <option>openai/gpt-4o</option>
+                    <option>anthropic/claude-3-sonnet</option>
+                  </select>
+                </div>
+              </div>
+              <div class="config-item">
+                <span>Temperature</span>
+                <input class="config-input" type="text" value="0.7" />
+              </div>
+              <div class="config-item">
+                <span>Max Length</span>
+                <input class="config-input" type="text" value="2000" />
+              </div>
+            </div>
+
+            <div class="config-section">
+              <div class="config-item collapsible expanded">
+                <span>Advanced Settings</span>
+                <span class="config-collapsed-hint">click to expand</span>
+                <span class="config-expanded-hint">click to collapse</span>
+              </div>
+              <div class="config-advanced expanded">
+                <div class="config-slider">
+                  <span>Top P</span>
+                  <input class="config-slider-input" type="text" value="1.00" />
+                </div>
+                <div class="config-slider">
+                  <span>Frequency Penalty</span>
+                  <input class="config-slider-input" type="text" value="0.00" />
+                </div>
+                <div class="config-slider">
+                  <span>Presence Penalty</span>
+                  <input class="config-slider-input" type="text" value="0.00" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        -->
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ── Legend ── -->
+  <div class="legend">
+    <div class="legend-title">Component Boundaries — State 1: [Default] (thêm State mới nếu cần multi-state)</div>
+    <div class="legend-items">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#7c3aed;border-color:#7c3aed;"></div>
+        <span><strong style="color:#7c3aed;">Sidebar</strong> — Logo · Workplace · Browse (9) · Resources (5) · User footer</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#2563eb;border-color:#2563eb;"></div>
+        <span><strong style="color:#2563eb;">SearchTrigger</strong> — Trigger button Search... ⌘K</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#ea580c;border-color:#ea580c;"></div>
+        <span><strong style="color:#ea580c;">PageLayout</strong> — h1 · description · Breadcrumb · Tabs · Content</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#db2777;border-color:#db2777;border-style:dashed;"></div>
+        <span><strong style="color:#db2777;">Breadcrumb</strong> — All Tools › [Page] (monospace uppercase)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#ca8a04;border-color:#ca8a04;border-style:dashed;"></div>
+        <span><strong style="color:#ca8a04;">Tabs</strong> — [Tab labels]</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#16a34a;border-color:#16a34a;"></div>
+        <span><strong style="color:#16a34a;">[CardComponent]</strong> — card items</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
