@@ -43,6 +43,7 @@
 - No `[Obsolete]` attributes in source
 - No `// TODO:` or `// FIXME:` comments
 - Source code is clean of technical debt markers
+- No `var` declarations - always explicit types
 
 ## UNIQUE STYLES
 - Dual SPA: Both Angular (`ClientApp`) and React (`ClientApp-React`) present
@@ -50,6 +51,12 @@
 - Solution format: `.slnx` (slim XML) not `.sln`
 - Test framework: NUnit + Shouldly + Moq (not xUnit)
 - BDD: Reqnroll with Playwright for acceptance tests
+- Node 24.x (bleeding edge - consider 22.x LTS)
+
+## CI/CD (GitHub Actions)
+- 4 workflows: build.yml, codeql.yml, release.yml, test-templates.yml
+- Template matrix testing (9 combinations: 3 frontends × 3 databases)
+- Dual frontend cache inefficiency (caches both Angular+React)
 
 ## COMMANDS
 ```bash

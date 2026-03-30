@@ -15,22 +15,10 @@ o:
 
 .PHONY: dev dev_d kill killbackend killfrontend redev setup install p_c k c o deploy_ssh deply_ssh u_d
 
-# Link local khi chạy bằng các target trong file này:
-# - Backend: http://localhost:8002
-# - Frontend: http://localhost:3002
-#
-# Link server (deploy_ssh):
-# - Backend: http://10.10.13.103:8002
-# - Frontend: http://10.10.13.103:3002 (Docker)
-
-# Một shell duy nhất: job nền không bị kill khi shell recipe kết thúc; wait chờ đúng 2 tiến trình.
-dev: kill
-	@echo "Starting backend and frontend..."; \
-	(cd backend && python3 -m venv venv && ./venv/bin/pip install -r requirements.txt -q && ./venv/bin/python -m uvicorn main:app --reload --host 0.0.0.0 --port 8002) & \
-	(cd frontend && npm run dev) & \
-	echo "Backend: http://localhost:8002"; \
-	echo "Frontend: http://localhost:3002"; \
-	wait
+# Chạy môi trường local với .NET Aspire AppHost
+dev:
+	@echo "Starting .NET Aspire AppHost..."
+	dotnet run --project ./src/AppHost
 
 dev_d: kill
 	@echo "Starting backend and frontend in background..."; \
@@ -61,8 +49,12 @@ redev: kill
 	wait
 
 setup:
-	cd backend && test -d venv || python3 -m venv venv && ./venv/bin/pip install -r requirements.txt
-	cd frontend && npm install
+	@echo "Restoring .NET dependencies..."
+	dotnet restore
+	@echo "Installing Angular dependencies..."
+	cd ./src/Web/ClientApp && npm install
+	@echo "Installing React dependencies..."
+	cd ./src/Web/ClientApp-React && npm install
 
 install: setup
 
