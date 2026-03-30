@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lo-Fi Wireframe - /[Page Name] Page</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 40px 100px;
+      min-height: 100vh;
+    }
+
+    /* ── Page header (wireframe label) ── */
+    .page-header { text-align: center; margin-bottom: 32px; }
+    .page-header h1 { font-size: 20px; font-weight: 600; color: #333; margin-bottom: 4px; }
+    .page-header p  { font-size: 12px; color: #888; }
+
+    /* ── Outer shell ── */
+    .wireframe-container {
+      width: 1054px; /* KICH THUOC DUY NHAT cho moi wireframe */
+      margin: 0 auto;
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 4px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 815px; /* chieu cao toi thieu chuan */
+    }
+
+    /* ════════════════════════════════════
+       SIDEBAR  (Sidebar.tsx)
+    ════════════════════════════════════ */
+    .sidebar {
+      background: #e8e8e8;
+      border-right: 2px solid #333;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Logo row */
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 14px 12px;
+      border-bottom: 1px solid #ccc;
+    }
+    .sidebar-logo-img {
+      width: 24px; height: 24px;
+      background: #bbb;
+      border: 1px dashed #999;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .sidebar-logo-name { font-size: 13px; font-weight: 600; color: #222; }
+    .sidebar-logo-badge {
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+      background: #e8e8e8; color: #666;
+      border: 1px solid #bbb;
+      padding: 1px 5px; border-radius: 3px;
+    }
+
+    /* Nav */
+    .sidebar-nav { flex: 1; padding: 8px; overflow-y: auto; }
+    .sidebar-section-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: #888;
+      padding: 8px 8px 4px;
+    }
+    .sidebar-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 10px;
+      border-radius: 5px;
+      margin-bottom: 1px;
+      cursor: pointer;
+    }
+    .sidebar-item:hover { background: #ddd; }
+    .sidebar-item.active { background: #fff; border: 1px solid #bbb; }
+    .sidebar-item-icon {
+      width: 16px; height: 16px;
+      background: #bbb; border: 1px solid #aaa;
+      border-radius: 2px; flex-shrink: 0;
+    }
+    .sidebar-item-label { font-size: 13px; color: #444; flex: 1; }
+    .sidebar-item.active .sidebar-item-label { color: #111; font-weight: 500; }
+    .sidebar-item-badge {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      background: #e8e8e8; color: #666;
+      border: 1px solid #bbb;
+      padding: 1px 5px; border-radius: 3px;
+    }
+    .sidebar-divider { height: 1px; background: #ccc; margin: 6px 8px; }
+
+    /* User footer */
+    .sidebar-user {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px;
+      border-top: 1px solid #ccc;
+    }
+    .sidebar-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #ccc;
+      border: 1px solid #aaa;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #555; flex-shrink: 0;
+    }
+    .sidebar-user-info { flex: 1; min-width: 0; }
+    .sidebar-user-name  { font-size: 13px; color: #222; }
+    .sidebar-user-email { font-size: 11px; color: #888; }
+    .sidebar-user-dots  { width: 16px; height: 16px; background: #ccc; border-radius: 2px; flex-shrink: 0; }
+
+    /* ════════════════════════════════════
+       MAIN AREA
+    ════════════════════════════════════ */
+    .main-area { display: flex; flex-direction: column; }
+
+    /* Header / SearchTrigger */
+    .header {
+      height: 52px;
+      border-bottom: 2px solid #333;
+      display: flex; align-items: center;
+      padding: 0 20px; gap: 12px;
+    }
+    .search-trigger {
+      flex: 1; max-width: 360px; height: 32px;
+      background: #f0f0f0; border: 1px solid #ccc; border-radius: 5px;
+      display: flex; align-items: center; padding: 0 10px; gap: 8px;
+    }
+    .search-trigger-icon { width: 14px; height: 14px; background: #bbb; border-radius: 2px; flex-shrink: 0; }
+    .search-trigger-text { font-size: 13px; color: #888; flex: 1; }
+    .search-trigger-kbd {
+      font-size: 10px; color: #888;
+      background: #e0e0e0; border: 1px solid #ccc;
+      border-radius: 3px; padding: 1px 5px;
+    }
+
+    /* PageLayout content */
+    .content { flex: 1; padding: 28px 24px; background: #fafafa; }
+
+    /* Title block */
+    .page-title { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 6px; }
+    .page-desc  { font-size: 14px; color: #666; margin-bottom: 16px; }
+
+    /* Breadcrumb */
+    .breadcrumb { display: flex; align-items: center; gap: 6px; margin-bottom: 16px; }
+    .breadcrumb-item {
+      font-size: 11px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: .6px;
+      color: #888; font-family: monospace;
+    }
+    .breadcrumb-item.current { color: #222; font-weight: 600; }
+    .breadcrumb-sep { font-size: 11px; color: #bbb; }
+
+    /* Tab bar */
+    .tabs-bar {
+      display: inline-flex; align-items: center; gap: 2px;
+      background: #ebebeb; border: 1px solid #ddd;
+      border-radius: 8px; padding: 4px; margin-bottom: 24px;
+    }
+    .tab {
+      padding: 5px 12px; border-radius: 5px;
+      font-size: 13px; font-weight: 500; color: #666;
+      border: none; background: transparent; cursor: pointer;
+    }
+    .tab.active { background: #fff; border: 1px solid #ccc; color: #111; }
+
+    /* ── Generic card grid (reuse for any card-based page) ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .card-item {
+      background: #fff; border: 1px solid #ddd;
+      border-radius: 8px; padding: 14px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .card-item-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 8px;
+    }
+    .card-item-left { flex: 1; min-width: 0; }
+    .card-type-badge {
+      display: inline-block;
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+      background: #e8e8e8; color: #666;
+      border: 1px solid #bbb;
+      padding: 1px 5px; border-radius: 3px; margin-bottom: 4px;
+    }
+    .card-item-name {
+      font-size: 14px; font-weight: 600; color: #111;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-item-meta { text-align: right; flex-shrink: 0; }
+    .card-item-meta-primary { font-size: 12px; color: #555; font-family: monospace; display: block; }
+    .card-item-meta-label   { font-size: 10px; color: #999; }
+    .card-item-desc {
+      font-size: 12px; color: #666; line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .card-item-footer {
+      display: flex; align-items: center;
+      border-top: 1px solid #eee; padding-top: 8px; gap: 8px;
+    }
+    .card-item-category { font-size: 11px; color: #888; }
+    .card-item-cta {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 4px;
+      font-size: 11px; color: #555;
+      background: #f0f0f0; border: 1px solid #ddd;
+      border-radius: 4px; padding: 3px 8px;
+    }
+    .card-item-cta-icon { width: 10px; height: 10px; background: #bbb; border-radius: 1px; }
+
+    /* ── Table (dùng khi trang cần dạng bảng) ── */
+    .table-wrapper { width: 100%; border: 1px solid #ccc; border-radius: 4px; background: #fff; }
+    .table-row { display: flex; padding: 10px 12px; border-bottom: 1px solid #eee; gap: 8px; }
+    .table-row:last-child { border-bottom: none; }
+    .table-header-row { background: #e8e8e8; font-weight: 700; }
+    .table-cell { flex: 1; font-size: 12px; color: #555; }
+    .table-cell-sm { flex: 0 0 80px; font-size: 12px; color: #555; }
+
+    /* ── Form (dùng khi trang cần dạng form) ── */
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 11px; font-weight: 600; color: #555; margin-bottom: 4px; display: block; }
+    .form-input {
+      width: 100%; height: 36px;
+      background: #f0f0f0; border: 1px solid #ccc;
+      border-radius: 4px; padding: 0 10px;
+      font-size: 13px; color: #888;
+    }
+    .form-textarea {
+      width: 100%; height: 80px;
+      background: #f0f0f0; border: 1px solid #ccc;
+      border-radius: 4px; padding: 8px 10px;
+      font-size: 13px; color: #888; resize: none;
+    }
+    .form-btn {
+      height: 36px; padding: 0 16px;
+      background: #333; color: #fff;
+      border: none; border-radius: 4px;
+      font-size: 13px; cursor: pointer;
+    }
+    .form-btn-secondary {
+      height: 36px; padding: 0 16px;
+      background: #e8e8e8; color: #555;
+      border: 1px solid #ccc; border-radius: 4px;
+      font-size: 13px; cursor: pointer;
+    }
+
+    /* ════════════════════════════════════
+       COMPONENT BOUNDARY SYSTEM
+       Label chip góc trên PHẢI + border màu riêng
+    ════════════════════════════════════ */
+    .comp { position: relative; border-radius: 4px; }
+    .comp::after {
+      content: attr(data-comp);
+      position: absolute; top: -1px; right: -1px;
+      font-size: 9px; font-weight: 700; letter-spacing: .4px;
+      text-transform: uppercase; padding: 2px 7px;
+      border-radius: 0 4px 0 4px;
+      z-index: 20; white-space: nowrap; line-height: 1.6; pointer-events: none;
+    }
+
+    /* solid = component lớn, dashed = component nhỏ lồng bên trong */
+    .comp-sidebar      { outline: 2px solid  #7c3aed; }
+    .comp-sidebar::after      { background: #7c3aed; color: #fff; }
+
+    .comp-search-modal { outline: 2px solid  #2563eb; }
+    .comp-search-modal::after { background: #2563eb; color: #fff; }
+
+    .comp-page-layout  { outline: 2px solid  #ea580c; }
+    .comp-page-layout::after  { background: #ea580c; color: #fff; }
+
+    .comp-breadcrumb   { outline: 2px dashed #db2777; outline-offset: 2px; }
+    .comp-breadcrumb::after   { background: #db2777; color: #fff; }
+
+    .comp-tabs         { outline: 2px dashed #ca8a04; outline-offset: 2px; }
+    .comp-tabs::after         { background: #ca8a04; color: #fff; }
+
+    .comp-card         { outline: 2px solid  #16a34a; }
+    .comp-card::after         { background: #16a34a; color: #fff; }
+
+    /* ── Legend ── */
+    .legend {
+      max-width: 1200px; margin: 28px auto 0;
+      background: #fff; border: 2px dashed #999;
+      border-radius: 4px; padding: 16px;
+    }
+    .legend-title {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: #666; margin-bottom: 12px;
+    }
+    .legend-items { display: flex; flex-wrap: wrap; gap: 20px; }
+    .legend-item  { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #666; }
+    .legend-dot   { width: 14px; height: 14px; border: 2px solid #333; background: #e0e0e0; border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Wireframe title ── -->
+  <div class="page-header">
+    <h1>Lo-Fi Wireframe — /[page-name] Page</h1>
+    <p>1:1 mapping với [ComponentView].tsx · Sidebar.tsx · PageLayout.tsx · SearchTrigger.tsx</p>
+  </div>
+
+  <div class="wireframe-container">
+
+    <!-- ══════════════════════════════════
+         [1] Sidebar.tsx
+    ══════════════════════════════════ -->
+    <aside class="sidebar comp comp-sidebar" data-comp="Sidebar">
+
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-img"></div>
+        <span class="sidebar-logo-name">AI Templates</span>
+        <span class="sidebar-logo-badge">Beta</span>
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <div class="sidebar-section-label">Workplace</div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Leaderboard</span>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- Browse: 9 items — gắn class "active" vào item tương ứng trang hiện tại -->
+        <div class="sidebar-section-label">Browse</div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Search Engine</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Skills</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Prompts</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Agents</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Chatbot</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Commands</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Settings</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Hooks</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">MCPs</span>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- Resources: 5 items -->
+        <div class="sidebar-section-label">Resources</div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Trending</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Jobs</span>
+          <span class="sidebar-item-badge">New</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Blog ↗</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">Docs ↗</span>
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-item-icon"></div>
+          <span class="sidebar-item-label">GitHub ↗</span>
+        </div>
+
+      </nav>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">AK</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">Alex Kim</div>
+          <div class="sidebar-user-email">alex@example.com</div>
+        </div>
+        <div class="sidebar-user-dots"></div>
+      </div>
+
+    </aside>
+
+    <!-- ══════════════════════════════════
+         MAIN AREA
+    ══════════════════════════════════ -->
+    <div class="main-area">
+
+      <!-- [2] SearchTrigger -->
+      <header class="header comp comp-search-modal" data-comp="SearchTrigger">
+        <div class="search-trigger">
+          <div class="search-trigger-icon"></div>
+          <span class="search-trigger-text">Search...</span>
+          <span class="search-trigger-kbd">⌘K</span>
+        </div>
+      </header>
+
+      <!-- [3] PageLayout + [PageView] -->
+      <main class="content comp comp-page-layout" data-comp="PageLayout + [PageView]">
+
+        <h1 class="page-title">[Page Title]</h1>
+        <p class="page-desc">[Page description]</p>
+
+        <nav class="breadcrumb comp comp-breadcrumb" data-comp="Breadcrumb">
+          <span class="breadcrumb-item">All Tools</span>
+          <span class="breadcrumb-sep">›</span>
+          <span class="breadcrumb-item current">[Page Name]</span>
+        </nav>
+
+        <div class="tabs-bar comp comp-tabs" data-comp="Tabs">
+          <div class="tab active">[Tab 1]</div>
+          <div class="tab">[Tab 2]</div>
+          <div class="tab">[Tab 3]</div>
+        </div>
+
+        <!-- Card grid (thay bằng table/form nếu trang yêu cầu) -->
+        <div class="card-grid">
+
+          <div class="card-item comp comp-card" data-comp="[CardComponent]">
+            <div class="card-item-top">
+              <div class="card-item-left">
+                <span class="card-type-badge">[TYPE]</span>
+                <div class="card-item-name">[Item Name]</div>
+              </div>
+              <div class="card-item-meta">
+                <span class="card-item-meta-primary">[stat]</span>
+                <span class="card-item-meta-label">[label]</span>
+              </div>
+            </div>
+            <p class="card-item-desc">[Item description goes here, max 2 lines]</p>
+            <div class="card-item-footer">
+              <span class="card-item-category">[Category]</span>
+              <div class="card-item-cta">
+                <div class="card-item-cta-icon"></div>
+                [CTA text]
+              </div>
+            </div>
+          </div>
+
+          <!-- Thêm card-item theo số lượng data thực tế -->
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ── Legend ── -->
+  <div class="legend">
+    <div class="legend-title">Component Boundaries — màu border tương ứng</div>
+    <div class="legend-items">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#7c3aed;border-color:#7c3aed;"></div>
+        <span><strong style="color:#7c3aed;">Sidebar</strong> — Logo · Workplace · Browse (9) · Resources (5) · User footer</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#2563eb;border-color:#2563eb;"></div>
+        <span><strong style="color:#2563eb;">SearchTrigger</strong> — Trigger button Search... ⌘K</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#ea580c;border-color:#ea580c;"></div>
+        <span><strong style="color:#ea580c;">PageLayout</strong> — h1 · description · Breadcrumb · Tabs · Content</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#db2777;border-color:#db2777;border-style:dashed;"></div>
+        <span><strong style="color:#db2777;">Breadcrumb</strong> — All Tools › [Page] (monospace uppercase)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#ca8a04;border-color:#ca8a04;border-style:dashed;"></div>
+        <span><strong style="color:#ca8a04;">Tabs</strong> — [Tab labels]</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#16a34a;border-color:#16a34a;"></div>
+        <span><strong style="color:#16a34a;">[CardComponent]</strong> — card items</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
